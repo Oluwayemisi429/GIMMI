@@ -3,7 +3,7 @@ import streamlit as st
 import joblib
 import numpy as np
 import pandas as pd
-import shap
+
 
 model = joblib.load('GIMMI_light.pkl')
 scaler = joblib.load('GIMMI_scaler_light.pkl')
