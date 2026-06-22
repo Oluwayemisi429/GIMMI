@@ -3,4 +3,4 @@ joblib
 numpy
 pandas
 scikit_learn
-shap==0.41.0
+
