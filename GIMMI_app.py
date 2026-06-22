@@ -45,19 +45,21 @@ if st.button("Predict Performance"):
                      'impressions', 'engagement_rate', 'followers_gained',
                      'caption_length', 'hashtags_count'] + [f'feature_{i}' for i in range(23)]
     
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(input_scaled)
-
-    if isinstance(shap_values, list):
-        predicted_class_index = list(model.classes_).index(prediction[0])
-        shap_array = shap_values[predicted_class_index][0]
-    else:
-        shap_array = shap_values[0]
-
-    vals = pd.Series(shap_array[:len(feature_names)], index=feature_names)
-    top_factors = vals.abs().nlargest(5).index
+    st.subheader("Why this prediction?")
     
-    for factor in top_factors:
-        impact = vals[factor]
-        direction = "increases" if impact > 0 else "decreases"
-        st.write(f"• **{factor}** {direction} performance")
+    feature_names = ['follower_count', 'has_call_to_action', 'post_hour',
+                     'likes', 'comments', 'shares', 'saves', 'reach',
+                     'impressions', 'engagement_rate', 'followers_gained',
+                     'caption_length', 'hashtags_count']
+    
+    input_values = [follower_count, has_call_to_action, post_hour,
+                    likes, comments, shares, saves, reach, impressions,
+                    engagement_rate, followers_gained, caption_length,
+                    hashtags_count]
+    
+    importances = model.feature_importances_[:len(feature_names)]
+    importance_series = pd.Series(importances, index=feature_names)
+    top_factors = importance_series.nlargest(5)
+    
+    for factor, score in top_factors.items():
+        st.write(f"• **{factor}** is a key driver of this prediction (importance: {score:.2f})")
